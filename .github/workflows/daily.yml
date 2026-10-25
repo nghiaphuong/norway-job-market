@@ -1,0 +1,77 @@
+name: Daily ingest & deploy
+
+on:
+  schedule:
+    - cron: '0 5 * * *'   # every day 05:00 UTC
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'Ingest mode'
+        type: choice
+        options: [incremental, full, reextract]
+        default: incremental
+  push:
+    branches: [main]
+    paths: ['site/**', 'ingest/build.mjs']
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: daily
+  cancel-in-progress: false
+
+jobs:
+  ingest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Test classification rules
+        run: node --test test/rules.test.mjs
+
+      - name: Ingest from NAV
+        if: github.event_name != 'push'
+        run: |
+          MODE="${{ github.event.inputs.mode || 'incremental' }}"
+          # Sunday runs do a full walk to reconcile statuses and rebuild history.
+          if [ "$MODE" = "incremental" ] && [ "$(date -u +%u)" = "7" ]; then MODE=full; fi
+          case "$MODE" in
+            full) node ingest/run.mjs --full ;;
+            reextract) node ingest/run.mjs --reextract ;;
+            *) node ingest/run.mjs ;;
+          esac
+
+      - name: Validate & build site data
+        run: |
+          node ingest/check.mjs
+          node ingest/build.mjs
+
+      - name: Commit data
+        if: github.event_name != 'push'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data site/data
+          git diff --cached --quiet || git commit -m "data: $(date -u +%F) daily update"
+          git push
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+  deploy:
+    needs: ingest
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

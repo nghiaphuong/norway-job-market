@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Norway Job Market Pulse</title>
+<meta name="description" content="Daily-updated analysis of every open job ad in Norway (NAV), with a deep-dive into data, business analysis and project management roles.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><circle cx='8' cy='8' r='6' fill='%230b6e7f'/></svg>">
+<link rel="stylesheet" href="assets/style.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.6.0/echarts.min.js"></script>
+</head>
+<body>
+<main class="wrap">
+  <section class="hero">
+    <div id="stamp"></div>
+    <h1>What is Norway hiring for — right now?</h1>
+    <p class="lead">An automated pipeline reads every job ad published on arbeidsplassen.no (NAV), extracts skills, language and work-mode requirements, and refreshes this dashboard daily. The second tab zooms in on data, business-analysis and project roles.</p>
+  </section>
+
+  <section>
+    <h2>Key insights</h2>
+    <ul class="insights" id="insights"><li class="skeleton">Loading…</li></ul>
+  </section>
+
+  <section class="grid g4" id="kpis"></section>
+
+  <section class="grid g2">
+    <div class="card span2">
+      <h2>New job ads per month</h2>
+      <h3>All occupations vs analytics, business & project roles (title-based)</h3>
+      <div id="c-history" class="chart"></div>
+      <p class="note">Counted from the first time each ad appears in NAV's feed. The current month is excluded until it is complete.</p>
+    </div>
+    <div class="card">
+      <h2>Open ads by occupation area</h2>
+      <div id="c-occ" class="chart tall"></div>
+    </div>
+    <div class="card">
+      <h2>Open ads by county</h2>
+      <div id="c-county" class="chart tall"></div>
+    </div>
+    <div class="card">
+      <h2>Public vs private sector</h2>
+      <div id="c-sector" class="chart"></div>
+    </div>
+    <div class="card">
+      <h2>Contract type</h2>
+      <div id="c-engagement" class="chart"></div>
+    </div>
+    <div class="card span2">
+      <h2>Largest recruiters right now</h2>
+      <h3>By number of open positions</h3>
+      <div id="c-employers" class="chart tall"></div>
+    </div>
+  </section>
+</main>
+<script type="module" src="assets/overview.js"></script>
+</body>
+</html>

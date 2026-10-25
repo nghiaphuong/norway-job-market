@@ -1,0 +1,15 @@
+{
+  "historyBuiltAt": "2026-10-25",
+  "cursor": "/api/v1/feed/7f2ed28d-91c6-4b76-84b2-59177f1328ec",
+  "lastRun": "2026-10-25T01:20:01.874Z",
+  "lastRunStats": {
+    "mode": "full",
+    "pages": 5083,
+    "added": 0,
+    "updated": 2,
+    "closed": 0,
+    "failed": 0,
+    "stored": 10661,
+    "active": 10661
+  }
+}

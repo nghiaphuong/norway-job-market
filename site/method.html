@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Methodology · Norway Job Market Pulse</title>
+<meta name="description" content="How the Norway Job Market Pulse pipeline collects, classifies and validates NAV job-ad data.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><circle cx='8' cy='8' r='6' fill='%230b6e7f'/></svg>">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<main class="wrap prose">
+  <section class="hero">
+    <div id="stamp"></div>
+    <h1>Methodology</h1>
+    <p class="lead">How the data is collected, classified and checked, and where its limits are.</p>
+  </section>
+
+  <h2>Business question</h2>
+  <p>Job seekers, recruiters and training providers want to know <em>which analytics, business-analysis and project skills Norwegian employers ask for, where, and how often Norwegian is a hard requirement</em>. Job portals show individual ads, not the pattern across all of them. This project measures that pattern every day.</p>
+
+  <h2>Pipeline</h2>
+  <div class="flow">
+    <span>NAV public job-ad feed</span><i>→</i>
+    <span>GitHub Actions (daily 05:00 UTC)</span><i>→</i>
+    <span>Node.js ingest &amp; rule-based extraction</span><i>→</i>
+    <span>Versioned CSV in Git (monthly partitions)</span><i>→</i>
+    <span>Aggregation to JSON</span><i>→</i>
+    <span>Static dashboard</span>
+  </div>
+  <ul>
+    <li><strong>Source.</strong> <a href="https://pam-stilling-feed.nav.no" rel="noopener">pam-stilling-feed.nav.no</a>, NAV's public feed of every ad on arbeidsplassen.no (NAV's own registrations and partner imports). It is a change log, so an ad appears again every time it is edited. The pipeline keeps the latest state per ad.</li>
+    <li><strong>Incremental loads.</strong> Each daily run resumes from the last feed page it read, fetches details only for new or changed active ads, and marks ads closed when NAV flags them inactive. A weekly full walk reconciles statuses and rebuilds the history series.</li>
+    <li><strong>Storage.</strong> One lean record per ad (no free text) in <code>data/ads/YYYY-MM.csv</code>, partitioned by publication month. Every daily change is a reviewable Git commit.</li>
+    <li><strong>Privacy.</strong> Contact names, e-mails and phone numbers in ads are never stored.</li>
+  </ul>
+
+  <h2>Classification rules</h2>
+  <table>
+    <thead><tr><th>Field</th><th>Rule</th></tr></thead>
+    <tbody>
+      <tr><td>Role family</td><td>Regular expressions on the ad title and NAV job title (Norwegian and English variants), checked in a fixed order: Data Engineering &amp; Science → Data &amp; BI → Business &amp; Process → Finance → Project/Product → Research &amp; Policy. Generic titles (“Rådgiver”, “Konsulent”, “Advisor”) count as Data &amp; BI only when the description contains at least 3 distinct analytics signals (SQL, Power BI, Python, statistics, dashboards, KPIs…).</td></tr>
+      <tr><td>Skills</td><td>42 skills and tools in five groups, matched in title and description. Ambiguous terms are disambiguated: <code>R</code> must appear near SQL, Python or statistics; <code>SAS</code> excludes the airline.</td></tr>
+      <tr><td>Norwegian required</td><td>Explicit requirement phrases such as “flytende norsk muntlig og skriftlig”, “gode norskkunnskaper”, “fluent Norwegian required” or “Bergenstest”. A Norwegian-language ad with no such phrase counts as <em>not explicitly required</em>.</td></tr>
+      <tr><td>Ad language</td><td>Stop-word ratio of English vs Norwegian words in the description.</td></tr>
+      <tr><td>Work mode</td><td>Mentions of remote work / “hjemmekontor” or hybrid arrangements. Absence means “not stated”, not “on-site”.</td></tr>
+      <tr><td>Seniority</td><td>From the title only (senior, lead, leder, junior, trainee…).</td></tr>
+    </tbody>
+  </table>
+  <p>All rules live in one file, <a href="https://github.com/nghiaphuong/norway-job-market/blob/main/ingest/dictionaries.mjs" rel="noopener"><code>ingest/dictionaries.mjs</code></a>, so they can be reviewed and changed in one place.</p>
+
+  <h2>History series</h2>
+  <p>The feed began in June 2023 and keeps every ad's title. Monthly “new ads” counts the first time each ad appears in the feed and classifies it by title only (no description is available for closed ads), so the history uses a slightly narrower definition than the current-ads analysis. June 2023 (the initial load) and the current, incomplete month are excluded.</p>
+
+  <h2>Known limitations</h2>
+  <ul>
+    <li>arbeidsplassen.no covers most, not all, of the Norwegian market. Some private recruiters publish only on FINN.no or LinkedIn.</li>
+    <li>One ad can cover several positions. Counts are ads unless labelled “positions”.</li>
+    <li>Rule-based extraction favours precision over recall: a skill that is described but not named is missed.</li>
+    <li>Changing the rules re-classifies active ads only (via <code>--reextract</code>). Closed ads keep the classification they had when they closed.</li>
+  </ul>
+
+  <h2>Latest run</h2>
+  <table id="run"><tbody><tr><td class="skeleton">Loading…</td></tr></tbody></table>
+</main>
+<script type="module">
+  import { renderChrome, load, stamp, esc } from './assets/common.js';
+  renderChrome();
+  const [meta] = await load('meta');
+  document.getElementById('stamp').innerHTML = stamp(meta);
+  const s = meta.lastRunStats ?? {};
+  const rows = [
+    ['Finished', new Date(meta.lastRun).toLocaleString('en-GB')],
+    ['Mode', s.mode], ['Feed pages read', s.pages], ['New ads', s.added], ['Updated ads', s.updated],
+    ['Closed ads', s.closed], ['Failed detail requests', s.failed], ['Ads stored', s.stored], ['Currently open', s.active],
+    ['History range', `${meta.historyFrom} → ${meta.historyTo}`],
+  ];
+  document.querySelector('#run tbody').innerHTML = rows.map(([k, v]) => `<tr><th>${esc(k)}</th><td>${esc(v ?? '–')}</td></tr>`).join('');
+</script>
+</body>
+</html>

@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Job Explorer · Norway Job Market Pulse</title>
+<meta name="description" content="Search open data, BI, business-analysis and project-management jobs in Norway by skill, county and language requirement.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><circle cx='8' cy='8' r='6' fill='%230b6e7f'/></svg>">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<main class="wrap">
+  <section class="hero">
+    <div id="stamp"></div>
+    <h1>Job explorer</h1>
+    <p class="lead">Every open analytics, business and project role, with the skills and requirements extracted from the ad. Filter, then open the original ad on arbeidsplassen.no.</p>
+  </section>
+
+  <section class="card">
+    <div class="filters">
+      <input type="search" id="q" placeholder="Search title or employer…" aria-label="Search title or employer">
+      <select id="f-family" aria-label="Role family"><option value="">All role families</option></select>
+      <select id="f-county" aria-label="County"><option value="">All counties</option></select>
+      <select id="f-skill" aria-label="Skill"><option value="">Any skill</option></select>
+      <label><input type="checkbox" id="f-english"> English-friendly only</label>
+      <span class="count" id="count"></span>
+    </div>
+  </section>
+
+  <section class="card" style="margin-top:16px">
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Role</th><th>Location</th><th>Skills &amp; requirements</th><th>Published</th><th>Deadline</th></tr></thead>
+        <tbody id="rows"><tr><td colspan="5" class="skeleton">Loading…</td></tr></tbody>
+      </table>
+    </div>
+    <p class="note" id="more"></p>
+  </section>
+</main>
+<script type="module" src="assets/jobs.js"></script>
+</body>
+</html>

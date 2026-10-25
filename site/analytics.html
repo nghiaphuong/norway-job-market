@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Analytics &amp; PM Roles · Norway Job Market Pulse</title>
+<meta name="description" content="Which skills, languages and seniority Norwegian employers ask for in data, BI, business-analysis and project-management roles.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><circle cx='8' cy='8' r='6' fill='%230b6e7f'/></svg>">
+<link rel="stylesheet" href="assets/style.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.6.0/echarts.min.js"></script>
+</head>
+<body>
+<main class="wrap">
+  <section class="hero">
+    <div id="stamp"></div>
+    <h1>Data, business &amp; project roles</h1>
+    <p class="lead" id="lead">Six role families, classified from job titles (and, for generic titles such as “Rådgiver”, from strong analytics evidence in the description).</p>
+  </section>
+
+  <section class="grid g3" id="families"></section>
+
+  <section class="grid g2">
+    <div class="card span2">
+      <h2>Most requested skills &amp; tools</h2>
+      <h3>Share of open analytics, business &amp; project ads mentioning each skill</h3>
+      <div id="c-skills" class="chart" style="height:680px"></div>
+    </div>
+    <div class="card span2">
+      <h2>Top skills by role family</h2>
+      <div class="filters" style="margin-bottom:8px"><label>Role family <select id="fam-select"></select></label></div>
+      <div id="c-fam-skills" class="chart"></div>
+    </div>
+    <div class="card span2">
+      <h2>Which skills go together?</h2>
+      <h3>Number of ads mentioning both skills</h3>
+      <div id="c-cooc" class="chart tall"></div>
+    </div>
+    <div class="card span2">
+      <h2>How these roles differ from the overall market</h2>
+      <div id="c-compare" class="chart"></div>
+    </div>
+    <div class="card">
+      <h2>Language requirements by family</h2>
+      <h3>% explicitly requiring Norwegian vs % written in English</h3>
+      <div id="c-lang" class="chart"></div>
+    </div>
+    <div class="card">
+      <h2>New ads per month by family</h2>
+      <h3>Title-based, from NAV's feed history</h3>
+      <div id="c-trend" class="chart"></div>
+    </div>
+    <div class="card">
+      <h2>Seniority (from title)</h2>
+      <div id="c-seniority" class="chart"></div>
+    </div>
+    <div class="card">
+      <h2>Education mentioned</h2>
+      <div id="c-education" class="chart"></div>
+    </div>
+    <div class="card">
+      <h2>Where the jobs are</h2>
+      <div id="c-counties" class="chart tall"></div>
+    </div>
+    <div class="card">
+      <h2>Top employers</h2>
+      <div id="c-employers" class="chart tall"></div>
+    </div>
+  </section>
+</main>
+<script type="module" src="assets/analytics.js"></script>
+</body>
+</html>
