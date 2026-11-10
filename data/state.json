@@ -1,15 +1,15 @@
 {
   "historyBuiltAt": "2026-11-08",
-  "cursor": "/api/v1/feed/d4bd0d0b-6cd7-4ed5-97d6-deb822e3ebb3",
-  "lastRun": "2026-11-09T05:55:11.450Z",
+  "cursor": "/api/v1/feed/99589984-a74b-471e-b68f-2f63a4ac5eaf",
+  "lastRun": "2026-11-10T05:44:57.660Z",
   "lastRunStats": {
     "mode": "incremental",
-    "pages": 3,
-    "added": 80,
-    "updated": 67,
-    "closed": 780,
+    "pages": 4,
+    "added": 550,
+    "updated": 551,
+    "closed": 377,
     "failed": 0,
-    "stored": 16379,
-    "active": 9647
+    "stored": 16929,
+    "active": 9835
   }
 }
